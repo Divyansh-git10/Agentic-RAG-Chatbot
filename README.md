@@ -147,12 +147,12 @@ Watch the 5-minute video demo here:
 
 ---
 
-### 📥 Install Dependencies
-
+## 📥 Install Dependencies
 Make sure to install required Python packages using:
 
 ```bash
 pip install -r requirements.txt
+```
 
 ---
 
@@ -172,5 +172,6 @@ pip install -r requirements.txt
 
 ---
 
-**Made by Divyansh Gautam**
+**🧑‍💻 Made with effort and experimentation by [Divyansh Gautam](https://github.com/Divyansh-git10)**
+
 
