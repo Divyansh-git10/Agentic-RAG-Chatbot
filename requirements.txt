@@ -1,0 +1,23 @@
+# Core UI + App Framework
+streamlit==1.35.0
+
+# Transformers + LLMs
+transformers==4.41.1
+sentence-transformers==2.7.0
+torch>=2.0.1
+accelerate==0.30.1
+
+# PDF, PPTX, DOCX Parsing
+PyMuPDF==1.23.22     # for PDF
+python-docx==1.1.0   # for DOCX
+python-pptx==0.6.21  # for PPTX
+
+# Vector DB
+faiss-cpu==1.8.0
+
+# Utility
+numpy==1.26.4
+scikit-learn==1.4.2
+
+# Optional: Huggingface Hub login (only if you load private models)
+huggingface-hub==0.23.2
