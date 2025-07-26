@@ -36,7 +36,7 @@ This system uses **three core agents**:
 
 ### 3. `LLMResponseAgent`
 
-- Forms a final prompt using the top-k chunks
+- Forms a final prompt by using the top-k chunks
 - Generates an answer using an LLM
 - Returns the answer + the used chunks
 
