@@ -2,8 +2,57 @@ import streamlit as st
 import os
 import tempfile
 
-from agents import IngestionAgent, RetrievalAgent, LLMResponseAgent  
+from agents import IngestionAgent, RetrievalAgent, LLMResponseAgent
 from mcp import create_mcp_message
+
+
+def extract_text_from_upload(file):
+    """Extract plain text from an uploaded file based on its extension.
+
+    Supports .pdf, .docx, .pptx, .csv, .txt and .md, falling back to a
+    plain-text decode for anything else. Parsing libraries are imported
+    lazily so the app still starts if an optional dependency is missing,
+    and a failure on one file never breaks the rest of the batch.
+    """
+    import io
+
+    name = (file.name or "").lower()
+    data = file.read()
+
+    try:
+        if name.endswith(".pdf"):
+            import fitz  # PyMuPDF
+            doc = fitz.open(stream=data, filetype="pdf")
+            return "\n".join(page.get_text() for page in doc)
+
+        if name.endswith(".docx"):
+            from docx import Document
+            document = Document(io.BytesIO(data))
+            return "\n".join(p.text for p in document.paragraphs)
+
+        if name.endswith(".pptx"):
+            from pptx import Presentation
+            prs = Presentation(io.BytesIO(data))
+            return "\n".join(
+                shape.text_frame.text
+                for slide in prs.slides
+                for shape in slide.shapes
+                if shape.has_text_frame
+            )
+
+        if name.endswith(".csv"):
+            import csv
+            text_data = data.decode("utf-8", errors="replace")
+            return "\n".join(", ".join(row) for row in csv.reader(io.StringIO(text_data)))
+
+        # .txt, .md, and anything else: decode as text
+        try:
+            return data.decode("utf-8")
+        except UnicodeDecodeError:
+            return data.decode("latin1")
+    except Exception as exc:  # one bad file shouldn't break the whole upload
+        return f"[Could not parse {file.name}: {exc}]"
+
 
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
 st.title("📄 Agentic RAG Chatbot")
@@ -14,10 +63,7 @@ st.sidebar.header("📤 Upload Documents")
 uploaded_files = st.sidebar.file_uploader("Upload multiple files", accept_multiple_files=True)
 docs = []
 for file in uploaded_files:
-    try:
-        docs.append(file.read().decode("utf-8"))  # Read as UTF-8
-    except UnicodeDecodeError:
-        docs.append(file.read().decode("latin1"))  # fallback
+    docs.append(extract_text_from_upload(file))
 
 
 # Initialize session state

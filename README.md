@@ -1,8 +1,8 @@
-# 🧠 Agentic RAG Chatbot: Multi-Format Document Q&A (Coding Assignment)
+# 🧠 Agentic RAG Chatbot: Multi-Format Document Q&A
 
 ## 🧩 Overview
 
-This project implements an **Agentic RAG Chatbot** capable of answering user queries over diverse uploaded documents (PDF, PPTX, CSV, DOCX, TXT). The architecture follows an **agent-based design** with inter-agent communication structured using a **Model Context Protocol (MCP)**.
+This project implements an **Agentic RAG Chatbot** capable of answering user queries over diverse uploaded documents (PDF, PPTX, CSV, DOCX, TXT). The architecture follows an **agent-based design** with inter-agent communication structured through a lightweight, custom **Model Context Protocol (MCP)** message schema — a structured JSON envelope defined in this project, not Anthropic's MCP standard.
 
 The chatbot allows users to:
 
@@ -14,7 +14,7 @@ The chatbot allows users to:
 Two variants were explored:
 
 - **Streamlit UI (deployed version)** → Uses lightweight **FLAN-T5-base** for practical hosting
-- **Colab Notebook (powerful version)** → Uses **Mistral-7B-Instruct** and FLAN-T5-large for robust answer quality
+- **Colab Notebook (powerful version)** → Uses **Mistral-7B-Instruct** for robust answer quality (FLAN-T5-large was evaluated too, but exceeded available memory, so **FLAN-T5-base** is used as the lightweight fallback)
 
 ---
 
@@ -63,7 +63,8 @@ Agents communicate via **MCP format**, e.g.:
 | ------------- | --------------------- | --------------------------------------------------- |
 | Streamlit UI  | `flan-t5-base`        | Lightweight, runs well locally                      |
 | Notebook Core | `mistral-7B-instruct` | Excellent performance, used for deep QA evaluation  |
-| Notebook Core | `flan-t5-large`       | Mid-weight fallback model, tested alongside Mistral |
+| Notebook Core | `flan-t5-large`       | Evaluated for quality; exceeded local memory, so `flan-t5-base` was used instead |
+| Notebook Core | `flan-t5-base`        | Lightweight fallback actually run alongside Mistral   |
 
 ### 🔍 Why FLAN in Streamlit?
 
